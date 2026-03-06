@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الجملة الفعلية - النسخة المحسّنة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2C3E50;
+            --light: #F8F9FA;
+            --success: #51CF66;
+            --error: #FF6B6B;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .title h1 {
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-icon {
+            font-size: 40px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .btn-admin {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-admin:hover {
+            background: #3ab3b0;
+        }
+
+        .stats {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, var(--accent), #FFD93D);
+            color: var(--dark);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Question Card */
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .question-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .points-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: var(--light);
+            border: 2px solid transparent;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background: #f0f0f0;
+            border-color: var(--secondary);
+            transform: translateX(-10px);
+        }
+
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .option.correct {
+            background: rgba(81, 207, 102, 0.1);
+            border-color: var(--success);
+        }
+
+        .option.incorrect {
+            background: rgba(255, 107, 107, 0.1);
+            border-color: var(--error);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #FF5252);
+            color: white;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .leaderboard-card,
+        .progress-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .student-rank {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .rank-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .rank-points {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: scaleIn 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content.admin {
+            max-width: 800px;
+            text-align: right;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .modal h2 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .student-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 4px solid var(--primary);
+        }
+
+        .student-item:hover {
+            background: #f0f0f0;
+            transform: translateX(-5px);
+        }
+
+        .student-item.active {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(78, 205, 196, 0.1));
+            border-right-color: var(--secondary);
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .student-meta {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .result-message {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-message.success {
+            background: rgba(81, 207, 102, 0.1);
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .result-message.error {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--error);
+            border-left: 4px solid var(--error);
+        }
+
+        /* Admin Panel */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: right;
+        }
+
+        .admin-table th {
+            background: var(--light);
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .admin-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .export-btn {
+            background: var(--success);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .export-btn:hover {
+            background: #45a049;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="title">
+                <span class="title-icon">🎮</span>
+                <h1>لعبة الجملة الفعلية</h1>
+            </div>
+            <div class="header-buttons">
+                <button class="btn-small btn-admin" onclick="openAdminPanel()">📊 لوحة المعلم</button>
+                <button class="btn-small btn-admin" onclick="changeStudent()">👥 تغيير الطالب</button>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">النقاط</span>
+                    <span class="stat-value" id="totalPoints">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">الصحيح</span>
+                    <span class="stat-value" id="correctCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">المستوى</span>
+                    <span class="level-badge" id="levelBadge">المبتدئ</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Question Section -->
+            <div class="question-card" id="questionCard">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <div class="question-number" id="questionNum">1</div>
+                        <span class="points-tag" id="pointsTag">10 نقاط</span>
+                    </div>
+                    <div style="font-size: 14px; color: #999;">
+                        السؤال <span id="currentQuestion">1</span> من <span id="totalQuestions">15</span>
+                    </div>
+                </div>
+
+                <p class="question-text" id="questionText"></p>
+
+                <div class="options" id="optionsContainer"></div>
+
+                <div id="resultMessage"></div>
+
+                <div class="button-group">
+                    <button class="btn-primary" id="submitBtn" onclick="submitAnswer()">أرسل الإجابة</button>
+                    <button class="btn-primary" id="nextBtn" onclick="nextQuestion()" style="display: none;">السؤال التالي</button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Progress Card -->
+                <div class="progress-card">
+                    <div class="card-title">📊 التقدم</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+
+                <!-- Leaderboard -->
+                <div class="leaderboard-card">
+                    <div class="card-title">🥇 قائمة الصدارة</div>
+                    <div id="leaderboard"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal" id="resultsModal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modalIcon">✅</div>
+            <h2 id="modalTitle">مبروك!</h2>
+            <p class="modal-message" id="modalMessage"></p>
+            <button class="btn-primary" onclick="resetGame()">لعب مرة أخرى</button>
+        </div>
+    </div>
+
+    <!-- Student Selector Modal -->
+    <div class="modal" id="studentModal">
+        <div class="modal-content" style="max-width: 600px; text-align: right;">
+            <h2>👋 اختر طالباً</h2>
+            <div class="student-list" id="studentList"></div>
+            <input type="text" id="studentName" placeholder="أو أدخل اسم طالب جديد" class="input-field" dir="rtl">
+            <button class="btn-primary" onclick="addNewStudent()" style="width: 100%;">إضافة طالب جديد</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content admin">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>📊 لوحة معلومات المعلم</h2>
+                <button class="btn-small btn-admin" onclick="closeAdminPanel()">✕ إغلاق</button>
+            </div>
+
+            <div class="admin-buttons">
+                <button class="export-btn" onclick="exportToCSV()">📥 تصدير CSV</button>
+                <button class="export-btn" onclick="exportToExcel()">📊 تصدير Excel</button>
+                <button class="export-btn" onclick="printResults()">🖨️ طباعة</button>
+                <button class="export-btn" onclick="clearAllData()" style="background: #ff6b6b;">🗑️ حذف الكل</button>
+            </div>
+
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>الترتيب</th>
+                        <th>اسم الطالب</th>
+                        <th>النقاط</th>
+                        <th>الإجابات الصحيحة</th>
+                        <th>النسبة المئوية</th>
+                        <th>المستوى</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Questions Database (نفس الأسئلة السابقة)
+        const questions = [
+            {
+                question: "عرّف الجملة الفعلية بأفضل تعريف:",
+                options: ["جملة تبدأ باسم", "جملة تبدأ بفعل", "جملة بدون أفعال", "جملة بدون أسماء"],
+                correct: 1,
+                points: 10
+            },
+            {
+                question: "في الجملة: (كتب الطالب الدرس) - من هو الفاعل؟",
+                options: ["كتب", "الطالب", "الدرس", "الجملة"],
+                correct: 1,
+                points: 10
+            },
+            {
+                question: "أي من الجمل التالية فعلية؟",
+                options: ["المعلم عادل", "ركض الولد في الملعب", "الطقس جميل", "الكتاب مفيد"],
+                correct: 1,
+                points: 10
+            },
+            {
+                question: "في الجملة: (شرب القط اللبن) - ما المفعول به؟",
+                options: ["شرب", "القط", "اللبن", "في"],
+                correct: 2,
+                points: 15
+            },
+            {
+                question: "أركان الجملة الفعلية هي:",
+                options: ["الفعل والاسم والحرف", "الفعل والفاعل", "الفعل والفاعل والمفعول به", "الاسم والخبر"],
+                correct: 1,
+                points: 15
+            },
+            {
+                question: "حول إلى جملة فعلية: (الطالب نشيط)",
+                options: ["نشط الطالب", "الطالب يكون نشيط", "نشاط الطالب", "الطالب وهو نشيط"],
+                correct: 0,
+                points: 15
+            },
+            {
+                question: "في الجملة: (تأكل البنت التفاح) - اذكر نوع الفعل:",
+                options: ["فعل ماضي", "فعل مضارع", "فعل أمر", "فعل مجهول"],
+                correct: 1,
+                points: 10
+            },
+            {
+                question: "أي فعل لا يحتاج إلى مفعول به؟",
+                options: ["أكل", "شرب", "نام", "كتب"],
+                correct: 2,
+                points: 10
+            },
+            {
+                question: "في الجملة: (يلعب الأطفال) - ما الفاعل؟",
+                options: ["يلعب", "الأطفال", "ل", "ا"],
+                correct: 1,
+                points: 10
+            },
+            {
+                question: "تصنيف الفعل (قرأ):",
+                options: ["فعل ماضي متعدٍ", "فعل مضارع لازم", "فعل أمر متعدٍ", "فعل ماضي لازم"],
+                correct: 0,
+                points: 15
+            },
+            {
+                question: "الفاعل يكون:",
+                options: ["دائماً اسماً معرفة", "دائماً اسماً نكرة", "اسماً معرفة أو نكرة", "فقط ضميراً"],
+                correct: 2,
+                points: 10
+            },
+            {
+                question: "حدد المفعول به في: (زرعت الفلاحة الأزهار)",
+                options: ["زرعت", "الفلاحة", "الأزهار", "في"],
+                correct: 2,
+                points: 10
+            },
+            {
+                question: "نوع الفعل (يركض):",
+                options: ["ماضي", "مضارع", "أمر", "ماضي منقوص"],
+                correct: 1,
+                points: 10
+            },
+            {
+                question: "الجملة الفعلية تحتوي على:",
+                options: ["فعل وفقط", "اسم وفقط", "فعل وفاعل على الأقل", "ثلاثة أفعال"],
+                correct: 2,
+                points: 15
+            },
+            {
+                question: "في الجملة: (تحدثت المعلمة عن الدرس) - حدد المفعول به:",
+                options: ["تحدثت", "المعلمة", "الدرس", "لا يوجد مفعول به"],
+                correct: 3,
+                points: 15
+            }
+        ];
+
+        let currentQuestion = 0;
+        let totalPoints = 0;
+        let correctAnswers = 0;
+        let currentStudent = null;
+        let students = [];
+        let studentResults = {};
+        let answeredQuestions = new Set();
+
+        window.addEventListener('load', () => {
+            loadStudents();
+            showStudentModal();
+        });
+
+        function loadStudents() {
+            const saved = localStorage.getItem('students');
+            if (saved) {
+                students = JSON.parse(saved);
+                const saved_results = localStorage.getItem('studentResults');
+                if (saved_results) studentResults = JSON.parse(saved_results);
+            }
+        }
+
+        function saveStudents() {
+            localStorage.setItem('students', JSON.stringify(students));
+            localStorage.setItem('studentResults', JSON.stringify(studentResults));
+        }
+
+        function showStudentModal() {
+            document.getElementById('studentModal').classList.add('active');
+            renderStudentList();
+        }
+
+        function changeStudent() {
+            showStudentModal();
+        }
+
+        function renderStudentList() {
+            const list = document.getElementById('studentList');
+            list.innerHTML = '';
+            students.forEach((student) => {
+                const div = document.createElement('div');
+                div.className = 'student-item';
+                if (currentStudent === student.id) div.classList.add('active');
+                div.innerHTML = `
+                    <div class="student-name">${student.name}</div>
+                    <div class="student-meta">النقاط: ${studentResults[student.id]?.points || 0} | الصحيح: ${studentResults[student.id]?.correct || 0}</div>
+                `;
+                div.onclick = () => selectStudent(student.id);
+                list.appendChild(div);
+            });
+        }
+
+        function selectStudent(studentId) {
+            currentStudent = studentId;
+            document.getElementById('studentModal').classList.remove('active');
+            resetGame();
+        }
+
+        function addNewStudent() {
+            const name = document.getElementById('studentName').value.trim();
+            if (name) {
+                const student = {
+                    id: Date.now(),
+                    name: name,
+                    createdAt: new Date().toISOString()
+                };
+                students.push(student);
+                studentResults[student.id] = { points: 0, correct: 0 };
+                saveStudents();
+                selectStudent(student.id);
+            }
+        }
+
+        function loadQuestion(index) {
+            const q = questions[index];
+            document.getElementById('questionNum').textContent = index + 1;
+            document.getElementById('currentQuestion').textContent = index + 1;
+            document.getElementById('totalQuestions').textContent = questions.length;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('pointsTag').textContent = q.points + ' نقاط';
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            q.options.forEach((option, i) => {
+                const label = document.createElement('label');
+                label.className = 'option';
+                label.innerHTML = `
+                    <input type="radio" name="answer" value="${i}">
+                    ${option}
+                `;
+                container.appendChild(label);
+            });
+
+            document.getElementById('resultMessage').innerHTML = '';
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            updateProgress();
+        }
+
+        function submitAnswer() {
+            if (answeredQuestions.has(currentQuestion)) {
+                nextQuestion();
+                return;
+            }
+
+            const selected = document.querySelector('input[name="answer"]:checked');
+            if (!selected) {
+                alert('اختر إجابة أولاً');
+                return;
+            }
+
+            answeredQuestions.add(currentQuestion);
+            const answer = parseInt(selected.value);
+            const correct = questions[currentQuestion].correct === answer;
+
+            if (correct) {
+                totalPoints += questions[currentQuestion].points;
+                correctAnswers++;
+                document.querySelector('.option:nth-child(' + (answer + 1) + ')').classList.add('correct');
+                showResult(true, questions[currentQuestion].points);
+            } else {
+                document.querySelector('.option:nth-child(' + (answer + 1) + ')').classList.add('incorrect');
+                document.querySelector('.option:nth-child(' + (questions[currentQuestion].correct + 1) + ')').classList.add('correct');
+                showResult(false);
+            }
+
+            updateStats();
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function showResult(isCorrect, points = 0) {
+            const msg = document.getElementById('resultMessage');
+            if (isCorrect) {
+                msg.className = 'result-message success';
+                msg.innerHTML = `<span>✅</span> صحيح! +${points} نقطة`;
+            } else {
+                msg.className = 'result-message error';
+                msg.innerHTML = `<span>❌</span> للأسف، الإجابة خاطئة`;
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion(currentQuestion);
+            } else {
+                endGame();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalPoints').textContent = totalPoints;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            updateLevel();
+            updateProgress();
+            updateLeaderboard();
+        }
+
+        function updateLevel() {
+            const levels = [
+                { name: 'المبتدئ', min: 0, emoji: '🌱' },
+                { name: 'المتوسط', min: 50, emoji: '📚' },
+                { name: 'المتقدم', min: 100, emoji: '🎯' },
+                { name: 'الخبير', min: 140, emoji: '⭐' }
+            ];
+
+            let level = levels[0];
+            for (let l of levels) {
+                if (totalPoints >= l.min) level = l;
+            }
+
+            document.getElementById('levelBadge').textContent = level.emoji + ' ' + level.name;
+        }
+
+        function updateProgress() {
+            const progress = (answeredQuestions.size / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = Math.round(progress) + '%';
+        }
+
+        function updateLeaderboard() {
+            const sortedStudents = [...students].sort((a, b) => {
+                return (studentResults[b.id]?.points || 0) - (studentResults[a.id]?.points || 0);
+            }).slice(0, 5);
+
+            const lb = document.getElementById('leaderboard');
+            lb.innerHTML = '';
+            sortedStudents.forEach((student, idx) => {
+                const div = document.createElement('div');
+                div.className = 'student-rank';
+                const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+                div.innerHTML = `
+                    <span><strong>${medals[idx]} ${student.name}</strong></span>
+                    <span class="rank-points">${studentResults[student.id]?.points || 0} نقطة</span>
+                `;
+                lb.appendChild(div);
+            });
+        }
+
+        function endGame() {
+            studentResults[currentStudent] = {
+                points: totalPoints,
+                correct: correctAnswers
+            };
+            saveStudents();
+
+            const percentage = (correctAnswers / questions.length) * 100;
+            const modal = document.getElementById('resultsModal');
+            const icon = document.getElementById('modalIcon');
+            const title = document.getElementById('modalTitle');
+            const message = document.getElementById('modalMessage');
+
+            if (percentage === 100) {
+                icon.textContent = '🎯';
+                title.textContent = 'مثالي!';
+                message.textContent = `لقد أجبت على جميع الأسئلة بشكل صحيح! 🌟\nحصلت على ${totalPoints} نقطة`;
+            } else if (percentage >= 80) {
+                icon.textContent = '⭐';
+                title.textContent = 'أداء ممتاز!';
+                message.textContent = `حصلت على ${correctAnswers} من ${questions.length} أسئلة صحيحة\n${totalPoints} نقطة`;
+            } else if (percentage >= 60) {
+                icon.textContent = '👍';
+                title.textContent = 'جيد!';
+                message.textContent = `حصلت على ${correctAnswers} من ${questions.length} أسئلة صحيحة\n${totalPoints} نقطة`;
+            } else {
+                icon.textContent = '💪';
+                title.textContent = 'حاول مرة أخرى!';
+                message.textContent = `حصلت على ${correctAnswers} من ${questions.length} أسئلة صحيحة\n${totalPoints} نقطة`;
+            }
+
+            modal.classList.add('active');
+        }
+
+        function resetGame() {
+            currentQuestion = 0;
+            totalPoints = 0;
+            correctAnswers = 0;
+            answeredQuestions.clear();
+            document.getElementById('resultsModal').classList.remove('active');
+            updateStats();
+            loadQuestion(0);
+        }
+
+        // Admin Panel Functions
+        function openAdminPanel() {
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = '';
+
+            const sortedStudents = [...students].sort((a, b) => {
+                return (studentResults[b.id]?.points || 0) - (studentResults[a.id]?.points || 0);
+            });
+
+            sortedStudents.forEach((student, idx) => {
+                const result = studentResults[student.id];
+                const percentage = ((result?.correct || 0) / questions.length * 100).toFixed(2);
+                
+                let level = '🌱 مبتدئ';
+                if ((result?.points || 0) >= 140) level = '⭐ خبير';
+                else if ((result?.points || 0) >= 100) level = '🎯 متقدم';
+                else if ((result?.points || 0) >= 50) level = '📚 متوسط';
+
+                const row = `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${student.name}</td>
+                        <td><strong>${result?.points || 0}</strong></td>
+                        <td>${result?.correct || 0}/${questions.length}</td>
+                        <td>${percentage}%</td>
+                        <td>${level}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            document.getElementById('adminModal').classList.add('active');
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminModal').classList.remove('active');
+        }
+
+        function exportToCSV() {
+            let csv = 'الترتيب,اسم الطالب,النقاط,الإجابات الصحيحة,النسبة المئوية,المستوى\n';
+            
+            const sortedStudents = [...students].sort((a, b) => {
+                return (studentResults[b.id]?.points || 0) - (studentResults[a.id]?.points || 0);
+            });
+
+            sortedStudents.forEach((student, idx) => {
+                const result = studentResults[student.id];
+                const percentage = ((result?.correct || 0) / questions.length * 100).toFixed(2);
+                csv += `${idx + 1},${student.name},${result?.points || 0},${result?.correct || 0}/${questions.length},${percentage}%\n`;
+            });
+
+            downloadFile(csv, 'نتائج_الاختبار.csv', 'text/csv');
+        }
+
+        function exportToExcel() {
+            let html = '<table border="1"><tr>';
+            html += '<th>الترتيب</th><th>اسم الطالب</th><th>النقاط</th><th>الإجابات الصحيحة</th><th>النسبة</th></tr>';
+
+            const sortedStudents = [...students].sort((a, b) => {
+                return (studentResults[b.id]?.points || 0) - (studentResults[a.id]?.points || 0);
+            });
+
+            sortedStudents.forEach((student, idx) => {
+                const result = studentResults[student.id];
+                const percentage = ((result?.correct || 0) / questions.length * 100).toFixed(2);
+                html += `<tr><td>${idx + 1}</td><td>${student.name}</td><td>${result?.points || 0}</td><td>${result?.correct || 0}/${questions.length}</td><td>${percentage}%</td></tr>`;
+            });
+
+            html += '</table>';
+            downloadFile(html, 'نتائج_الاختبار.html', 'text/html');
+        }
+
+        function printResults() {
+            window.print();
+        }
+
+        function clearAllData() {
+            if (confirm('هل أنت متأكد من حذف جميع البيانات؟')) {
+                localStorage.clear();
+                students = [];
+                studentResults = {};
+                currentStudent = null;
+                closeAdminPanel();
+                showStudentModal();
+            }
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
